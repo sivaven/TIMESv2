@@ -1,0 +1,21 @@
+
+parent.0=izhikevich_base_carl.params
+
+#multi.fitness.max 		= 0
+#multi.fitness.min 		= -1000
+
+# override specific max and min values, e.g
+# multi.fitness.max.0		= 1000
+
+# Use a statistics object which dumps the front
+stat =  ec.multiobjective.MultiObjectiveStatistics
+stat.front =../output/Pareto
+stat.file=../output/Full
+stat.num-children = 1
+stat.child.0 = ec.simple.SimpleShortStatistics
+stat.child.0.file=../output/Stat
+
+pop.subpop.0.species.fitness =	ec.app.izhikevich.IzhikevichMultiObjectiveFitness
+
+#stat.do-message=false
+stat.do-generation = true
