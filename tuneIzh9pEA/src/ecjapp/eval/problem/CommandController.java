@@ -6,6 +6,7 @@ import ecjapp.util.Option;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -54,14 +55,18 @@ public class CommandController {
         if (remoteInfo.isDefined())
             carlsimShellCommand = remoteInfo.get().getSSHCommand(carlsimShellCommand);
         
-        final Process p = Runtime.getRuntime().exec(carlsimShellCommand);
+        //final Process p = Runtime.getRuntime().exec(carlsimShellCommand);
+        final Process p = new ProcessBuilder(carlsimShellCommand.split(" ")).redirectError(ProcessBuilder.Redirect.INHERIT).start();
         final Writer carlSimInput = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
         PopulationToFile.DoubleVectorPopulationToFile(individuals, carlSimInput);
         carlSimInput.close(); // Sends EOF
         p.waitFor();
+        
+        return streamToString(p.getInputStream());
+    }
 
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-
+    private String streamToString(final InputStream s) throws IOException {
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(s));
         final StringBuilder sb = new StringBuilder();
         String line = "";			
         while ((line = reader.readLine())!= null) {
