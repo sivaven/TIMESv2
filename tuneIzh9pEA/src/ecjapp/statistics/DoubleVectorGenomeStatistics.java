@@ -37,7 +37,7 @@ public class DoubleVectorGenomeStatistics extends Statistics {
         catch (IOException i) {
             state.output.fatal("An IOException occurred trying to create the log " + statisticsFile + ":\n" + i);
         }
-        // else we ll just keep the log at 0, which is stdout
+        // else we’ll just keep the log at 0, which is stdout
         
         initOnly = state.parameters.getBoolean(base.push(P_INIT_ONLY), null, false);
 	final String pVectorLength = state.parameters.getString(base.push(P_P_LENGTH), null);

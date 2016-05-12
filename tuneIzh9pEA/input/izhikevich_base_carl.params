@@ -55,9 +55,9 @@ eval.problem.objective.idealFitnessValue = 0
 eval.problem =                          ecjapp.eval.problem.CommandProblem
 eval.problem.objective = ec.app.izhikevich.PhenotypeToFitness                
 #ecjapp.eval.problem.objective.StringToDoubleObjective
-eval.problem.errorGenesFile = 		$genesOnError.txt
-eval.problem.errorResultsFile = 	$resultsOnError.txt
-eval.problem.simulationCommand =        $../CARL1/projects/tuneIzh9p/carlsim_tuneIzh9p_4c2_wrapper
+eval.problem.errorGenesFile = 		$output/genesOnError.txt
+eval.problem.errorResultsFile = 	$output/resultsOnError.txt
+eval.problem.simulationCommand =        $../tuneIzh9p/carlsim_tuneIzh9p_4c2_wrapper
 
 breed.elite.0 = 2
 #breed.elite-fraction.0 = 0.25
