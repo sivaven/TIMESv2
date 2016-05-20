@@ -51,7 +51,7 @@ class MCNeuronSim{
 
 		~MCNeuronSim();
 
-		void initNetwork();
+		void initNetwork(const int deviceID);
 		void setupGroups();
 		void setupAllNeuronParms();
 		void setupSingleNeuronParms(int grpRowId, int neurId, bool coupledComp);
