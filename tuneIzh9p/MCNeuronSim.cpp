@@ -109,11 +109,11 @@
 
 }
 
-	void MCNeuronSim::initNetwork(){
+	void MCNeuronSim::initNetwork(const int deviceID){
 			/**************
 		 * [I] construct a CARLsim network on the heap.
 		 ***************/
-			network = new CARLsim("MCNeuronSim_core", GPU_MODE, SILENT);
+	  network = new CARLsim("MCNeuronSim_core", GPU_MODE, SILENT, deviceID);
 	}
 
 	void MCNeuronSim::setupGroups(){

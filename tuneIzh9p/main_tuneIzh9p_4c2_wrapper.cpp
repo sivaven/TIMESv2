@@ -11,6 +11,7 @@
 #include <ctime>
 
 #include "core/MCNeuronSim.h"
+#include "parsingHelpers.h"
 
 using namespace CARLsim_PTI;
 
@@ -22,8 +23,11 @@ int MCNeuronSim::time_step =100;
 
 namespace CARLsim_PTI {
 class TuneIzh9p4c2Wrapper : public Experiment {
+private:
+  const unsigned int _deviceID;
 public:
-	TuneIzh9p4c2Wrapper() {}
+
+  TuneIzh9p4c2Wrapper(const unsigned int deviceID) : _deviceID(deviceID) {}
 
 	void run(const ParameterInstances &parameters, std::ostream &outputStream) const {
 
@@ -49,7 +53,7 @@ public:
 
 			MCNeuronSim* mc = new MCNeuronSim(compCnt, _connLayout, scenCount, popSize_neuronCount, _parameters);
 
-			mc->initNetwork();
+			mc->initNetwork(_deviceID);
 			mc->setupGroups();
 			mc->setupAllNeuronParms();
 			mc->setupIandRunNetwork();
@@ -74,7 +78,8 @@ int main(int argc, char* argv[]) {
 					fclose(fp);
 					delete fp;
 */
-		const TuneIzh9p4c2Wrapper tune4c2;
+  const int deviceID = getIntegerArgument("-device", argc, argv, 0);
+  const TuneIzh9p4c2Wrapper tune4c2(deviceID);
 		const PTI pti(argc, argv, std::cout, std::cin);
 		pti.runExperiment(tune4c2);
 
