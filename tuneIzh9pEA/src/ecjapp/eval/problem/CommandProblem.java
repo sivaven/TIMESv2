@@ -162,9 +162,9 @@ public class CommandProblem extends Problem implements SimpleGroupedProblemForm 
 			add((DoubleVectorIndividual)individuals[i]);
         }};
         if (!chunk.isEmpty()) {
-            final String extraArguments = (dynamicArguments.isDefined()) ? dynamicArguments.get().get(state, individuals, from, to, subpopulation, threadnum) : "";
+            final String extraArguments = (dynamicArguments.isDefined()) ? dynamicArguments.get().get(state, threadnum) : "";
             try {
-                final String simulationResult = controller.execute(chunk, extraArguments);
+                final String simulationResult = controller.execute(chunk, Option.NONE, extraArguments);
                 final String[] lines = simulationResult.split("\n");
                 if (simulationResult.isEmpty() || lines.length != chunk.size()) {
                     writeGenomesAndResults(state, chunk, lines);
@@ -175,7 +175,13 @@ public class CommandProblem extends Problem implements SimpleGroupedProblemForm 
                 }
                 for (int i = 0; i < lines.length; i++) {
                     final Individual ind = individuals[from + i];
-                    ind.fitness = objective.evaluate(state, ind, lines[i]);
+                    try {
+                        ind.fitness = objective.evaluate(state, ind, lines[i]);
+                    }
+                    catch (final Exception e) {
+                        writeGenomesAndResults(state, chunk, lines);
+                        throw new IllegalStateException(String.format("%s: Exception '%s' occurred when evaluating the following phenotype: %s", this.getClass().getSimpleName(), e, lines[i]));
+                    }
                     ind.evaluated = true;
                 }
             }
