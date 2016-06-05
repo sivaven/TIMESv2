@@ -168,11 +168,11 @@ class MCParamFile {
 	}
 	
 	private void loadNonGeneParmsToDB(){
-		addParametertoDB("pop.subpop.0.species.genome-size",""+EAGenes.geneLength);
-		addParametertoDB("pop.subpop.0.species.min-gene","0");						// Float vector species muhst have default min
-		addParametertoDB("pop.subpop.0.species.max-gene","1");						//max genes
-		addParametertoDB("pop.subpop.0.species.mutation-prob","0.1");				// default - overriden at gene level
-		addParametertoDB("pop.subpop.0.species.mutation-type","integer-reset");		//default - overriden at gene level
+		addParametertoDB("vector.species.genome-size",""+EAGenes.geneLength);
+		addParametertoDB("vector.species.min-gene","0");						// Float vector species muhst have default min
+		addParametertoDB("vector.species.max-gene","1");						//max genes
+		addParametertoDB("vector.species.mutation-prob","0.1");				// default - overriden at gene level
+		addParametertoDB("vector.species.mutation-type","integer-reset");		//default - overriden at gene level
 		//addParametertoDB("pop.subpop.0.species.mutation-type","integer-reset");
 		//pop.subpop.0.species.mutation-stdev.3
 	}
@@ -201,21 +201,21 @@ class MCParamFile {
 	private void addGene(ModelParameterID modelParam, int idx, boolean isDendrite, int baseIdx) {
 		EAParmsOfModelParm eaParams = geneParms.get(modelParam);	
 		if(!ModelParameterID.I.equals(modelParam) && !ModelParameterID.I_dur.equals(modelParam) && !ModelParameterID.VPEAK.equals(modelParam) && !ModelParameterID.K.equals(modelParam)) {
-			addParametertoDB("pop.subpop.0.species.min-gene."+idx, eaParams.getMinGene());
-			addParametertoDB("pop.subpop.0.species.max-gene."+idx, eaParams.getMaxGene());
+			addParametertoDB("vector.species.min-gene."+idx, eaParams.getMinGene());
+			addParametertoDB("vector.species.max-gene."+idx, eaParams.getMaxGene());
 		}else{
-			addParametertoDB("pop.subpop.0.species.min-gene."+idx, eaParams.getMinGenes()[idx-baseIdx]);
-			addParametertoDB("pop.subpop.0.species.max-gene."+idx, eaParams.getMaxGenes()[idx-baseIdx]);
+			addParametertoDB("vector.species.min-gene."+idx, eaParams.getMinGenes()[idx-baseIdx]);
+			addParametertoDB("vector.species.max-gene."+idx, eaParams.getMaxGenes()[idx-baseIdx]);
 		}
-		addParametertoDB("pop.subpop.0.species.mutation-type."+idx, eaParams.getMutType());
+		addParametertoDB("vector.species.mutation-type."+idx, eaParams.getMutType());
 		if(!eaParams.getMutSD().equalsIgnoreCase("0.0")){
-			addParametertoDB("pop.subpop.0.species.mutation-stdev."+idx, eaParams.getMutSD());
+			addParametertoDB("vector.species.mutation-stdev."+idx, eaParams.getMutSD());
 		}
 		
 		if(eaParams.getMutType().equals("integer-random-walk")){
-			addParametertoDB("pop.subpop.0.species.random-walk-probability."+idx, eaParams.getMutRate());
+			addParametertoDB("vector.species.random-walk-probability."+idx, eaParams.getMutRate());
 		}else{
-			addParametertoDB("pop.subpop.0.species.mutation-prob."+idx, eaParams.getMutRate());
+			addParametertoDB("vector.species.mutation-prob."+idx, eaParams.getMutRate());
 		}
 		
 		if(isDendrite && 
@@ -225,9 +225,9 @@ class MCParamFile {
 				!ModelParameterID.P.equals(modelParam)&&
 				!ModelParameterID.G.equals(modelParam)&&
 				!ModelParameterID.W.equals(modelParam)) { // for dendrite bounded bw (0 and 10), hence set to true
-			addParametertoDB("pop.subpop.0.species.mutation-bounded."+idx, "false");
+			addParametertoDB("vector.species.mutation-bounded."+idx, "false");
 		}else{
-			addParametertoDB("pop.subpop.0.species.mutation-bounded."+idx, eaParams.getMutBounded());
+			addParametertoDB("vector.species.mutation-bounded."+idx, eaParams.getMutBounded());
 		}
 	}
 	void addParametertoDB(String name, String value) {
