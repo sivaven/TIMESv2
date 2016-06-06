@@ -87,11 +87,11 @@ public class ModelEvaluatorMC{
 			float[] weight) {
 		if(expSpikePatternData==null) {
 			System.out.println("NULL expSpikePatternData!!!");
-			System.exit(-1);
+			throw new IllegalStateException("NULL expSpikePatternData!!!");
 		}
 		if(mcConstraintData==null && model.getNCompartments()>1) {
 			System.out.println("NULL mcConstraintData!!!");
-			System.exit(-1);
+			throw new IllegalStateException("NULL mcConstraintData!!!");
 		}
 		this.model = model;
 		this.expSpikePatternData = expSpikePatternData;	
@@ -120,11 +120,11 @@ public class ModelEvaluatorMC{
 			CarlMcSimData carlMcSimData) {
 		if(expSpikePatternData==null) {
 			System.out.println("NULL expSpikePatternData!!!");
-			System.exit(-1);
+			throw new IllegalStateException("NULL expSpikePatternData!!!");
 		}
 		if(mcConstraintData==null && model.getNCompartments()>1) {
 			System.out.println("NULL mcConstraintData!!!");
-			System.exit(-1);
+			throw new IllegalStateException("NULL mcConstraintData!!!");
 		}
 		this.model = model;
 		this.expSpikePatternData = expSpikePatternData;	
@@ -308,8 +308,8 @@ public class ModelEvaluatorMC{
         		System.out.print("Imin "+expSpikePatternData.getCurrent().getValueMin());
         		System.out.print("Imax "+expSpikePatternData.getCurrent().getValueMax());
         		System.out.print("Idur "+expSpikePatternData.getCurrentDuration());
-        		System.exit(-1);
-        	}        	   
+			throw new IllegalStateException("Matching failed!");
+                }        	   
         }else{
         	model_spike_pattern = solver.solveAndGetSpikePatternAdapting();	 
         }
