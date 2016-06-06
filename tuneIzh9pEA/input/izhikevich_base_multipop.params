@@ -9,56 +9,56 @@ evalthreads	= 1
 seed.0		= time
 
 state		= ec.simple.SimpleEvolutionState
-
 pop		= ec.Population
 init		= ec.simple.SimpleInitializer
 finish		= ec.simple.SimpleFinisher
 breed		= ec.simple.SimpleBreeder
-
-
 exch		= ec.simple.SimpleExchanger
 
-jobs = 1
+jobs = 10
 generations		= 100
-pop.subpop.0.size 		= 200
-
 quit-on-run-complete	= true
 checkpoint		= false
 checkpoint-prefix	= ec
 checkpoint-modulo	= 1
 
+
+ec.subpop.size 		= 20
+
 pop.subpops		= 1
 pop.subpop.0		= ec.Subpopulation
+pop.subpop.1		= ec.Subpopulation
+pop.subpop.2		= ec.Subpopulation
+pop.subpop.3		= ec.Subpopulation
+pop.subpop.4		= ec.Subpopulation
+pop.subpop.5		= ec.Subpopulation
+pop.subpop.6		= ec.Subpopulation
+pop.subpop.7		= ec.Subpopulation
+pop.subpop.8		= ec.Subpopulation
+pop.subpop.9		= ec.Subpopulation
 
-pop.subpop.0.duplicate-retries 	= 0
-#
-pop.subpop.0.species 		= ec.vector.FloatVectorSpecies
-pop.subpop.0.species.ind	= ec.vector.DoubleVectorIndividual
+ec.subpop.duplicate-retries 	= 0
 
-pop.subpop.0.species.crossover-type	= two
-base.likelihood = 0.5	
-
+ec.subpop.species 		= ec.vector.FloatVectorSpecies
+vector.species.ind	= ec.vector.DoubleVectorIndividual
+vector.species.fitness =                ec.simple.SimpleFitness
 select.tournament.size		= 2
 
-pop.subpop.0.species.pipe			= ec.vector.breed.VectorMutationPipeline
-pop.subpop.0.species.pipe.source.0		= ec.vector.breed.VectorCrossoverPipeline
-pop.subpop.0.species.pipe.source.0.source.0	= ec.select.TournamentSelection
-pop.subpop.0.species.pipe.source.0.source.1	= ec.select.TournamentSelection
+vector.species.pipe			= ec.vector.breed.VectorMutationPipeline
+vector.mutate.source.0	= ec.select.TournamentSelection
 
-#eval		= ec.simple.SimpleEvaluator
-#eval.problem		= ec.app.izhikevich.ModelEvaluatorWrapper
 
 # Set up external fitness evaluation
 # =========================
-eval		= ecjapp.eval.SimpleGroupedEvaluator
+eval		= ecjapp.eval.MultiPopSimpleGroupedEvaluator
 eval.problem.objective.idealFitnessValue = 0
-eval.problem =                          ecjapp.eval.problem.CommandProblem
+eval.problem =                          ecjapp.eval.problem.MultiPopCommandProblem
 eval.problem.objective = ec.app.izhikevich.PhenotypeToFitness                
 #ecjapp.eval.problem.objective.StringToDoubleObjective
 eval.problem.errorGenesFile = 		$output/genesOnError.txt
 eval.problem.errorResultsFile = 	$output/resultsOnError.txt
 eval.problem.simulationCommand =        $../tuneIzh9p/carlsim_tuneIzh9p_4c2_wrapper
-#eval.problem.simulationCommandArguments =	-device 1
+eval.problem.simulationCommandArguments =        -device 1
 
 breed.elite.0 = 2
 #breed.elite-fraction.0 = 0.25
