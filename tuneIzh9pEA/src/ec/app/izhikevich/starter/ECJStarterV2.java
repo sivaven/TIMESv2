@@ -133,6 +133,8 @@ public class ECJStarterV2 {
 					if(timer) timeStart = System.nanoTime();
 					
 					final EvolutionState state = Evolve.initialize(parameterDB, i+1, output );	
+					state.job = new Object[1];
+					state.job[0] = Integer.valueOf(i);
 					state.run(EvolutionState.C_STARTED_FRESH);
 					
 					if(timer)  {
