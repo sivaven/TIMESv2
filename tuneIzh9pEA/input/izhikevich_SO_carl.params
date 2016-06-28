@@ -1,4 +1,6 @@
+#parent.0=izhikevich_base_multipop.params
 parent.0=izhikevich_base_carl.params
+
 pop.subpop.0.species.fitness 	= ec.simple.SimpleFitness
 
 stat		= ec.simple.SimpleStatistics

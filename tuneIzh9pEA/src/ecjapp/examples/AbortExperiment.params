@@ -45,13 +45,13 @@ breed.reevaluate-elites.0 =		false
 eval.problem =                          ecjapp.eval.problem.CommandProblem
 eval.problem.objective =                ecjapp.eval.problem.objective.StringToDoubleObjective
 eval.problem.objective.idealFitnessValue = 8.0
-eval.problem.simulationCommand =        $src/CARLsim-app/Examples/SumExample
+eval.problem.simulationCommand =        $src/CARLsim-app/Examples/AbortExample
+eval.problem.errorGenesFile =           $genesOnError.txt
+eval.problem.errorResultsFile =         $resultsOnError.txt
 
 # Statistics
 # =========================
-stat.num-children = 2
+stat.num-children = 1
 stat.child.0 =                          ecjapp.statistics.DoubleVectorGenomeStatistics
 stat.child.0.pVectorLength =		pop.subpop.0.species.genome-size
 stat.child.0.file =                     $genomes.csv
-stat.child.1 =                          ecjapp.statistics.FitnessStatistics
-stat.child.1.file =                     $fitness.csv

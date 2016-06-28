@@ -2,6 +2,7 @@ package ecjapp.eval.problem;
 
 import ec.EvolutionState;
 import ec.Individual;
+import ec.Population;
 import ec.Problem;
 import ec.util.Output.OutputExitException;
 import ec.util.Parameter;
@@ -40,7 +41,7 @@ import java.util.List;
  * 
  * @author Eric 'Siggy' Scott
  */
-public class CommandProblem extends Problem implements SimpleGroupedProblemForm {
+public class MultiPopCommandProblem extends Problem implements MultiPopGroupedProblemForm {
     public final static String P_REMOTE_SERVER = "remoteServer";
     public final static String P_REMOTE_USERNAME = "remoteUsername";
     public final static String P_REMOTE_PATH = "remotePath";
@@ -147,40 +148,41 @@ public class CommandProblem extends Problem implements SimpleGroupedProblemForm 
     // </editor-fold>
     
     @Override
-    public void evaluate(final EvolutionState state, final Individual[] individuals, final int from, final int to, final int subpopulation, final int threadnum) throws OutputExitException {
+    public void evaluate(final EvolutionState state, final List<DoubleVectorIndividual> individuals, final List<Integer> subPopulations, final int threadnum) throws OutputExitException {
         assert(state != null);
         assert(individuals != null);
-        assert(from >= 0);
-        assert(to >= from);
-        assert(to <= individuals.length);
-        assert(subpopulation >= 0);
+        assert(!individuals.isEmpty());
+        assert(subPopulations.size() == individuals.size());
         assert(threadnum >= 0);
-        assert(Misc.containsOnlySubtypesOf(individuals, DoubleVectorIndividual.class));
+       
+        final List<DoubleVectorIndividual> indsToEvaluate = new ArrayList<DoubleVectorIndividual>();
+        final Option<List<Integer>> indsToEvaluateSubPops = new Option(new ArrayList<Integer>());
+        for (int i = 0; i < individuals.size(); i++) {
+            if (reevaluate || !individuals.get(i).evaluated) {
+                indsToEvaluate.add(individuals.get(i));
+                indsToEvaluateSubPops.get().add(subPopulations.get(i));
+            }
+        }
         
-        final List<DoubleVectorIndividual> chunk = new ArrayList<DoubleVectorIndividual>() {{
-		for(int i = from; i < to; i++)
-		    if (reevaluate || !individuals[i].evaluated)
-			add((DoubleVectorIndividual)individuals[i]);
-        }};
-        if (!chunk.isEmpty()) {
+        if (!indsToEvaluate.isEmpty()) {
             final String extraArguments = (dynamicArguments.isDefined()) ? dynamicArguments.get().get(state, threadnum) : "";
             try {
-                final String simulationResult = controller.execute(chunk, Option.NONE, extraArguments);
+                final String simulationResult = controller.execute(indsToEvaluate, indsToEvaluateSubPops, extraArguments);
                 final String[] lines = simulationResult.split("\n");
-                if (simulationResult.isEmpty() || lines.length != chunk.size()) {
-                    writeGenomesAndResults(state, chunk, Option.NONE, lines);
+                if (simulationResult.isEmpty() || lines.length != indsToEvaluate.size()) {
+                    writeGenomesAndResults(state, indsToEvaluate, indsToEvaluateSubPops, lines);
                     if (simulationResult.isEmpty())
-                        throw new IllegalStateException(String.format("%s: Sent %d individuals to external command '%s', but the returns simulation results were empty.", this.getClass().getSimpleName(), chunk.size(), controller.getCommandPath()));
+                        throw new IllegalStateException(String.format("%s: Sent %d individuals to external command '%s', but the returns simulation results were empty.", this.getClass().getSimpleName(), indsToEvaluate.size(), controller.getCommandPath()));
                     else
-                        throw new IllegalStateException(String.format("%s: Sent %d individuals to external command '%s', but the returned simulation results had %d lines.", this.getClass().getSimpleName(), chunk.size(), controller.getCommandPath(), lines.length));
+                        throw new IllegalStateException(String.format("%s: Sent %d individuals to external command '%s', but the returned simulation results had %d lines.", this.getClass().getSimpleName(), indsToEvaluate.size(), controller.getCommandPath(), lines.length));
                 }
                 for (int i = 0; i < lines.length; i++) {
-                    final Individual ind = individuals[from + i];
+                    final Individual ind = indsToEvaluate.get(i);
                     try {
                         ind.fitness = objective.evaluate(state, ind, lines[i]);
                     }
                     catch (final Exception e) {
-                        writeGenomesAndResults(state, chunk, Option.NONE, lines);
+                        writeGenomesAndResults(state, indsToEvaluate, indsToEvaluateSubPops, lines);
                         throw new IllegalStateException(String.format("%s: Exception '%s' occurred when evaluating the following phenotype: %s", this.getClass().getSimpleName(), e, lines[i]));
                     }
                     ind.evaluated = true;
